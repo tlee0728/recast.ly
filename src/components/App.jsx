@@ -2,6 +2,8 @@ import Search from './Search.js';
 import VideoList from './VideoList.js';
 import VideoPlayer from './VideoPlayer.js';
 import exampleVideoData from '../data/exampleVideoData.js';
+import searchYouTube from '../lib/searchYouTube.js';
+import YOUTUBE_API_KEY from "../config/youtube.js";
 
 // var App = () => (
 //   <div>
@@ -25,19 +27,22 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentVideoTitle: 'titles',
+      currentVideoTitle: '',
       currentVideoDescription: '',
-      currentVideoId: ''    
+      currentVideoId: '',
+      options: {
+        query: '',
+        key: '',
+        max: 5
+      }    
     };
     this.handleClick = this.handleClick.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   // componentDidMount() {
-  //   this.setState({
-  //     currentVideoTitle: exampleVideoData[0].snippet.title,
-  //     currentVideoDescription: exampleVideoData[0].snippet.description,
-  //     currentVideoId: exampleVideoData[0].id.videoId    
-  //   })
+    
+  //   searchYouTube();
   // }
 
   handleClick(e) {
@@ -56,18 +61,35 @@ class App extends React.Component {
     }
   }
 
+  handleSubmit(e) {
+    e.preventDefault();
+    var input = e.target.value;
+    this.setState({
+      options: {
+        query: input
+      }
+    });
+    var options = {
+      query: this.state.options.query,
+      max: this.state.options.max,
+      key: this.state.options.key
+    };
+    console.log('hey')
+    searchYouTube(options);
+  }
+
 
   render() {
     return (
       <div>
         <nav className="navbar">
           <div className="col-md-6 offset-md-3">
-            <div><Search /></div>
+            <div><Search handleSubmit={this.handleSubmit}/></div>
           </div>
         </nav>
         <div className="row">
           <div className="col-md-7">
-            <div><VideoPlayer video={exampleVideoData[0]} handleClick={this.handleClick} title={this.state.currentVideoTitle} description={this.state.currentVideoDescription} vidId={this.state.currentVideoId}/></div>
+            <div><VideoPlayer handleClick={this.handleClick} title={this.state.currentVideoTitle} description={this.state.currentVideoDescription} vidId={this.state.currentVideoId}/></div>
           </div>
           <div className="col-md-5">
             <div><VideoList handleClick={this.handleClick} videos={exampleVideoData}/></div>
