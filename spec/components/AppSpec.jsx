@@ -53,7 +53,7 @@ describe('App', function() {
 
     beforeEach(function() {
       searchYouTubeStub = sinon.stub();
-      searchYouTubeStub.yields(window.fakeVideoData);
+      searchYouTubeStub.yields(window.);
       app = renderIntoDocument(
         <App searchYouTube={searchYouTubeStub} />
       );
@@ -69,7 +69,7 @@ describe('App', function() {
       var videoEntryTitleElements = scryRenderedDOMComponentsWithClass(app, 'video-list-entry-title');
 
       videoEntryTitleElements.forEach((videoEntryTitle, i) =>
-        expect(videoEntryTitle.innerHTML).to.equal(fakeVideoData[i].snippet.title)
+        expect(videoEntryTitle.innerHTML).to.equal([i].snippet.title)
       );
     });
 
