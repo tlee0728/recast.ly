@@ -1,7 +1,7 @@
 import Search from './Search.js';
 import VideoList from './VideoList.js';
 import VideoPlayer from './VideoPlayer.js';
-import exampleVideoData from '../data/exampleVideoData.js'
+import exampleVideoData from '../data/exampleVideoData.js';
 
 // var App = () => (
 //   <div>
@@ -27,7 +27,7 @@ class App extends React.Component {
     this.state = {
       currentVideoTitle: 'titles',
       currentVideoDescription: '',
-      currentVideoId:''    
+      currentVideoId: ''    
     };
     this.handleClick = this.handleClick.bind(this);
   }
