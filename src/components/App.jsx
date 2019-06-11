@@ -5,24 +5,6 @@ import exampleVideoData from '../data/exampleVideoData.js';
 import searchYouTube from '../lib/searchYouTube.js';
 import YOUTUBE_API_KEY from "../config/youtube.js";
 
-// var App = () => (
-//   <div>
-//     <nav className="navbar">
-//       <div className="col-md-6 offset-md-3">
-//         <div><Search /></div>
-//       </div>
-//     </nav>
-//     <div className="row">
-//       <div className="col-md-7">
-//         <div><VideoPlayer /></div>
-//       </div>
-//       <div className="col-md-5">
-//         <div><VideoList /></div>
-//       </div>
-//     </div>
-//   </div>
-// );
-
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -32,51 +14,61 @@ class App extends React.Component {
       currentVideoId: '',
       options: {
         query: '',
-        key: '',
+        key: YOUTUBE_API_KEY,
         max: 5
-      }    
+      },
+      videoData: exampleVideoData
     };
     this.handleClick = this.handleClick.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   // componentDidMount() {
-    
+
   //   searchYouTube();
   // }
 
-  handleClick(e) {
+  handleClick(e) { //for switching the video view
     var videoTitle = e.target.textContent;
     for (var i = 0; i < exampleVideoData.length; i++) {
       var vidData = exampleVideoData[i];
-      // console.log('wtf:', vidData.snippet);
-      // console.log(videoTitle);
+
       if (vidData.snippet.title === videoTitle) {
         this.setState({
           currentVideoTitle: videoTitle,
           currentVideoDescription: vidData.snippet.description,
           currentVideoId: vidData.id.videoId
-        }); 
+        });
       }
     }
   }
 
-  handleSubmit(e) {
+  handleChange(e) { //for keeping track of our input
     e.preventDefault();
     var input = e.target.value;
     this.setState({
       options: {
-        query: input
+        query: input,
+        max: 5,
+        key: YOUTUBE_API_KEY
       }
     });
-    var options = {
-      query: this.state.options.query,
-      max: this.state.options.max,
-      key: this.state.options.key
-    };
-    console.log('hey')
-    searchYouTube(options);
+
   }
+
+  handleSubmit(e) { //for pressing enter in the input field and clicking search
+    e.preventDefault();
+    searchYouTube(this.state.options, (data) => {
+      // console.log(this);
+      this.setState({
+        videoData: data.items
+      });
+      // console.log(this.state.videoData);
+    });
+    // console.log(this.state.videoData);
+  }
+
 
 
   render() {
@@ -84,15 +76,16 @@ class App extends React.Component {
       <div>
         <nav className="navbar">
           <div className="col-md-6 offset-md-3">
-            <div><Search handleSubmit={this.handleSubmit}/></div>
+            <div><Search handleSubmit={this.handleSubmit} handleChange={this.handleChange} /></div>
+            {/* videoData={this.state.videoData} */}
           </div>
         </nav>
         <div className="row">
           <div className="col-md-7">
-            <div><VideoPlayer handleClick={this.handleClick} title={this.state.currentVideoTitle} description={this.state.currentVideoDescription} vidId={this.state.currentVideoId}/></div>
+            <div><VideoPlayer handleClick={this.handleClick} title={this.state.currentVideoTitle} description={this.state.currentVideoDescription} vidId={this.state.currentVideoId} /></div>
           </div>
           <div className="col-md-5">
-            <div><VideoList handleClick={this.handleClick} videos={exampleVideoData}/></div>
+            <div><VideoList handleClick={this.handleClick} videos={this.state.videoData} /></div>
           </div>
         </div>
       </div>
